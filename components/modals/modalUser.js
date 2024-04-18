@@ -19,7 +19,7 @@ const ModalUser = ({ visible, onClose, onSave, doctors }) => {
                 const parsedResult = JSON.parse(result);
                 const userId = parsedResult.data;
                 setUserId(userId);
-                console.log('userId:', userId);
+                // console.log('userId:', userId);
             }
         };
 
@@ -27,7 +27,7 @@ const ModalUser = ({ visible, onClose, onSave, doctors }) => {
     }, []);
 
     const createAppointment = async () => {
-        const response = await fetch('http://192.168.100.9:4000/api/appointments', {
+        const response = await fetch('http://192.168.65.103:4000/api/appointments', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -40,12 +40,12 @@ const ModalUser = ({ visible, onClose, onSave, doctors }) => {
             }),
         });
 
-        if (!response.ok) {
-            throw new Error('Error al crear la cita');
+        if (response.ok) {
+            console.log(' la cita se creo');
         }
 
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
     };
 
     const guardarCita = () => {
@@ -74,7 +74,7 @@ const ModalUser = ({ visible, onClose, onSave, doctors }) => {
                             selectedValue={selectedDoctor}
                             onValueChange={(itemValue) => setSelectedDoctor(itemValue)}>
                             {doctors.map((doctor, index) => (
-                                <Picker.Item key={index} label={doctor.name} value={doctor.id} />
+                                <Picker.Item key={index} label={doctor.username} value={doctor.id} />
                             ))}
                         </Picker>
                     )}

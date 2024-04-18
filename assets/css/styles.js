@@ -370,8 +370,9 @@ const userM = StyleSheet.create({
 
 const historial = StyleSheet.create({
   inicio: {
+    marginTop: 40,
     width: '100%',
-    height: '88%',
+    height: '92%',
     display: 'flex',
     // flexDirection:'row',
     justifyContent: 'space-evenly',
@@ -425,8 +426,9 @@ const historial = StyleSheet.create({
 
 const profile = StyleSheet.create({
   inicio: {
+    marginTop: 40,
     width: '100%',
-    height: '85%',
+    height: '92%',
     display: 'flex',
     justifyContent: 'space-evenly',
     alignItems: 'center'
@@ -475,7 +477,8 @@ const profile = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    marginTop: 30,
+    marginTop: 20,
+    marginBottom: 50,
     backgroundColor: '#133830',
     color: '#ffffff',
     textAlign: 'center',
@@ -491,8 +494,9 @@ const profile = StyleSheet.create({
 
 const doctorH = StyleSheet.create({
   inicio: {
+    marginTop: 40,
     width: '100%',
-    height: '88%',
+    height: '92%',
     display: 'flex',
     // flexDirection:'row',
     justifyContent: 'space-evenly',
@@ -557,7 +561,9 @@ const pacientes = StyleSheet.create({
 
 const admin = StyleSheet.create({
   inicio:{
-    height:'70%',
+    marginTop: -40,
+    width: '100%',
+    height: '103%',
     display:'flex',
     justifyContent:'space-evenly',
   },

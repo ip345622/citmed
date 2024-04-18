@@ -35,7 +35,7 @@ export default Users = () => {
                 const parsedResult = JSON.parse(result);
                 const userId = parsedResult.data;
                 setUserId(userId);
-                console.log('userId:', userId);
+                // console.log('userId:', userId);
 
                 const user = await getUsers(userId);
                 if (user) {
@@ -56,7 +56,7 @@ export default Users = () => {
                 const now = new Date();
                 const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-                const response = await fetch('http://192.168.100.9:4000/api/appointments', {
+                const response = await fetch('http://192.168.65.103:4000/api/appointments', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ export default Users = () => {
                     new Date(cita.createdAt) <= now
                 ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
 
-                console.log('Cita más reciente:', citaMasReciente);
+                // console.log('Cita más reciente:', citaMasReciente);
                 return citaMasReciente;
             } catch (error) {
                 console.error('Error al obtener las citas:', error);
@@ -87,7 +87,7 @@ export default Users = () => {
             getCitaMasReciente(userId).then(cita => {
                 if (cita) {
                     setLoginUser({
-                        username: 'usuario log',
+                        username: cita.username,
                         data: cita.data,
                         time: cita.time,
                         doctor: cita.doctorName,
@@ -113,7 +113,7 @@ export default Users = () => {
         const id_doctor = doctorSeleccionado.id; // Suponiendo que el objeto doctorSeleccionado tiene un campo id
         console.log('id ',id_doctor);
         try {
-            const response = await fetch('http://192.168.100.9:4000/api/appointments', {
+            const response = await fetch('http://192.168.65.103:4000/api/appointments', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -127,9 +127,9 @@ export default Users = () => {
                 }),
             });
     
-            if (!response.ok) {
-                throw new Error('Error al crear la cita');
-            }
+            // if (response.ok) {
+             // throw new Error('Error al crear la cita');
+            // }
     
             // Actualizar la lista de citas o realizar alguna acción adicional si es necesario
             console.log('Cita creada exitosamente');
@@ -142,7 +142,7 @@ export default Users = () => {
 
     const getUsers = async (userId) => {
         try {
-            const response = await fetch('http://192.168.100.9:4000/api/users', {
+            const response = await fetch('http://192.168.65.103:4000/api/users', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ export default Users = () => {
 
     const getDoctors = async (specialty) => {
         try {
-            const response = await fetch('http://192.168.100.9:4000/api/doctors', {
+            const response = await fetch('http://192.168.65.103:4000/api/doctors', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -180,7 +180,7 @@ export default Users = () => {
             // Filtrar los doctores por especialidad
             const filteredDoctors = data.filter(doctor => doctor.specialty === specialty);
             const doctorNames = filteredDoctors.map(doctor => doctor.name);
-            // console.log('Doctores de', specialty, ':', filteredDoctors);
+            console.log('Doctores de', specialty, ':', filteredDoctors);
             return filteredDoctors;
         } catch (error) {
             console.error(error);

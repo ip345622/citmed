@@ -1,16 +1,21 @@
-import { View, Image, Text, ScrollView, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import { View, Image, Text, ScrollView, TouchableOpacity, KeyboardAvoidingView,
+    Platform, } from "react-native";
+import NavbarUser from "../../components/navbar/NavbarUser";
+import FooterAdmin from "../../components/footer/FooterAdmin";
+import React, { useState,useEffect } from "react";
 import { adminDoccss } from '../../assets/css/styles';
-import { useNavigation } from '@react-navigation/native';
-
+import useInterval from "../../components/interval/interval";
 import { adminUser, delit, edit, add } from "../../assets";
 import { ModalAdd,ModalDelete,ModalUpdate } from "../../components/modals";
 
 export default AdminUsers = () => {
-    const navigation = useNavigation();
+  const [keyboardStatus, setKeyboardStatus] = useState(false);
     const [modalEditarVisible, setModalEditarVisible] = useState(false);
     const [modalEliminarVisible, setModalEliminarVisible] = useState(false);
     const [modalAnadirVisible, setModalAnadirVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+    const [user, setUser] = useState([]);
     const pacient = [
         { id: 1, name: 'Jorge', lastName: 'Gomez' },
         { id: 2, name: 'Carol', lastName: 'Perez' },
@@ -23,7 +28,36 @@ export default AdminUsers = () => {
         { id: 9, name: 'Alejandra', lastName: 'De los santos' },
         { id: 10, name: 'Alejandra', lastName: 'De los santos' },
     ];
+    useEffect(() => {
+    
+
+        getUser();
+      }, []);
+    
+      useInterval(() => {
+        getUser();
+      }, 2000);
+      const getUser = async () => {
+        const response = await fetch("http://192.168.65.103:4000/api/users", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Error al obtener los doctores");
+        }
+        const users = await response.json();
+        const users2 = await users.filter(user => user.rol === 'user');
+        setUser(users2);
+        // console.log(doctors);
+      };
     return (
+        <KeyboardAvoidingView
+      style={adminDoccss.inicio}
+      behavior={Platform.OS === "ios" ? "padding" : null}
+    >
+      <NavbarUser />
         <View style={adminDoccss.inicio}>
             <Image source={adminUser} />
             <Text style={adminDoccss.h1}>Total de pacientes</Text>
@@ -31,23 +65,28 @@ export default AdminUsers = () => {
                 <View style={adminDoccss.tableRow}>
                     <Text style={adminDoccss.tableHeader}>N°</Text>
                     <Text style={adminDoccss.tableHeader}>Nombre</Text>
-                    <Text style={adminDoccss.tableHeader}>Apellido</Text>
+                    <Text style={adminDoccss.tableHeader}>Correo</Text>
                     <Text style={adminDoccss.tableHeader}>Eliminar</Text>
                 </View>
                 {/* <ScrollView > */}
-                {pacient.map((p) => (
+                {user.map((p, index) => (
                     <View style={adminDoccss.tableRow} key={p.id}>
-                        <Text style={adminDoccss.tableCell}>{p.id}</Text>
-                        <Text style={adminDoccss.tableCell}>{p.name}</Text>
-                        <Text style={adminDoccss.tableCell}>{p.lastName}</Text>
-                    <TouchableOpacity onPress={() => setModalEliminarVisible(true)} style={adminDoccss.tableCell}>
+                        <Text style={adminDoccss.tableCell}>{index + 1}</Text>
+                        <Text style={adminDoccss.tableCell}>{p.username}</Text>
+                        <Text style={adminDoccss.tableCell}>{p.email}</Text>
+                    <TouchableOpacity onPress={() => {
+                        setModalEliminarVisible(true)
+                        setSelectedUser(p._id)
+                        }} style={adminDoccss.tableCell}>
                         <Image source={delit} resizeMode="contain" />
                     </TouchableOpacity>
                     </View>
                 ))}
                 {/* </ScrollView> */}
             </View>
-            <ModalDelete visible={modalEliminarVisible} onClose={() => setModalEliminarVisible(false)} />
+            <ModalDelete visible={modalEliminarVisible} doctor={selectedUser} onClose={() => setModalEliminarVisible(false)} />
         </View>
+        {!keyboardStatus && <FooterAdmin />}
+    </KeyboardAvoidingView>
     );
 }

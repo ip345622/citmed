@@ -1,9 +1,38 @@
 import React, { useState } from 'react';
-import { Modal, View, Text,  TouchableOpacity } from 'react-native';
+import { Modal, View, Text,  TouchableOpacity,Alert } from 'react-native';
 import { userM } from "../../assets/css/styles";
 
 
-const ModalDelete = ({ visible, onClose }) => {
+const ModalDelete = ({ visible, onClose,doctor }) => {
+    // console.log(doctor);
+    const deleteDoctor = async(doctor) => {
+        try {
+            const response = await fetch(`http://192.168.65.103:4000/api/doctor/${doctor}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response.json());
+        // if(response.ok){
+        //     Alert.alert("Eliminado",'Doctor eliminado correctamente');
+        // onClose();
+        // }
+        if(response.ok){
+            const response = await fetch(`http://192.168.65.103:4000/api/user/${doctor}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response.json());
+        Alert.alert("Eliminado",'Usuario eliminado correctamente');
+        onClose();
+        }
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <Modal
             animationType="slide"
@@ -15,7 +44,7 @@ const ModalDelete = ({ visible, onClose }) => {
                     <Text style={userM.close} onPress={onClose}>X</Text>
                     <Text style={userM.h1}>¿Estás seguro que deseas eliminar?</Text>
                     <View style={userM.buttons}>
-                        <TouchableOpacity style={userM.button} onPress={() => console.log('Eliminando')}>
+                        <TouchableOpacity style={userM.button} onPress={() => deleteDoctor(doctor)}>
                             <Text style={userM.button}>Eliminar</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={userM.button2} onPress={onClose}>

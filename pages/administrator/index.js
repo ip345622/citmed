@@ -1,8 +1,11 @@
-import { View, Image, Text, ScrollView, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import { View, Image, Text, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
+import React, { useState,useEffect } from "react";
 import { admin } from '../../assets/css/styles';
-
+import NavbarUser from "../../components/navbar/NavbarUser";
+import FooterAdmin from "../../components/footer/FooterAdmin";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PieChart } from "react-native-chart-kit";
+
 
 const data = [
   {
@@ -13,7 +16,7 @@ const data = [
     legendFontSize: 15,
   },
   {
-    name: " Pendientes",
+    name: " Cantidad de consultas",
     count: 45, // Cambia este valor según las consultas terminadas
     color: "#1E90FF", // Color para las consultas terminadas
     legendFontColor: "#7F7F7F",
@@ -29,11 +32,63 @@ const data = [
 ];
 
 export default Administrator = () => {
-    return(
-        <View style={admin.inicio}>
+  const [keyboardStatus, setKeyboardStatus] = useState(false);
+  const [user,setUser] = useState('');
+  const [userId, setUserId] = useState(null);
+  useEffect(() => {
+    const fetchUserId = async () => {
+        const result = await AsyncStorage.getItem('userId');
+        if (result) {
+            const parsedResult = JSON.parse(result);
+            const userId = parsedResult.data;
+            setUserId(userId);
+            // console.log('userId:', userId);
+
+            const user = await getUsers(userId);
+            if (user) {
+                setLoginUser(prevState => ({
+                    ...prevState,
+                    username: user.username
+                }));
+            }
+        }
+    };
+
+    fetchUserId();
+}, []);
+
+useEffect(() => {
+  const getUser = async (userId) => {
+    const response = await fetch(`http://192.168.65.103:4000/api/users`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al obtener las citas');
+    }
+    const user1 = await response.json();
+    const userUnique = user1.filter(user => user._id === userId);
+    // console.log(userUnique);
+    setUser(userUnique);
+  }
+  if (userId) {
+    console.log(user);
+    getUser(userId);
+  }
+},[userId])
+
+  return(
+    <KeyboardAvoidingView style={admin.inicio} behavior={Platform.OS === 'ios' ? 'padding' : null}>
+
+    <View style={admin.inicio}>
+          <NavbarUser />
             <View>
             <Text style={admin.h1}>Bienvenido</Text>
-            <Text style={admin.p}>Israel</Text>
+            <Text style={admin.p}>{user.length > 0 ? user[0].username : ''}</Text>
+
             </View>
         <View style={{ alignItems: "center", marginTop: 100 }}>
           {/* Grafico */}
@@ -55,5 +110,8 @@ export default Administrator = () => {
             />
         </View>
             </View>
+            {!keyboardStatus && <FooterAdmin />}
+
+        </KeyboardAvoidingView>
     );
 }

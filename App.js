@@ -47,13 +47,13 @@ export default function App() {
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
           <Stack.Screen name="Register" component={Register} options={{ headerShown: false }}/>
           <Stack.Screen name='Table' component={Users} options={{ headerShown: false }} />
-          <Stack.Screen name='Historial' component={Historial} />
-          <Stack.Screen name='Profile' component={Profile} />
-          <Stack.Screen name='Doctor' component={Doctor} />
-          <Stack.Screen name='Pacientes' component={Pacientes} />
-          <Stack.Screen name='AdministradorHome' component={Administrator} />
-          <Stack.Screen name='AdministradorDoctores' component={AdminDoc} />
-          <Stack.Screen name='AdministradorUsuarios' component={AdminUsers} />
+          <Stack.Screen name='Historial' component={Historial} options={{ headerShown: false }} />
+          <Stack.Screen name='Profile' component={Profile} options={{ headerShown: false }}/>
+          <Stack.Screen name='Doctor' component={Doctor} options={{ headerShown: false }}/>
+          <Stack.Screen name='Pacientes' component={Pacientes} options={{ headerShown: false }}/>
+          <Stack.Screen name='AdministradorHome' component={Administrator} options={{ headerShown: false }}/>
+          <Stack.Screen name='AdministradorDoctores' component={AdminDoc} options={{ headerShown: false }}/>
+          <Stack.Screen name='AdministradorUsuarios' component={AdminUsers} options={{ headerShown: false }}/>
         </Stack.Navigator>
       </NavigationContainer>
       {/* {!keyboardStatus && <FooterDoc />} */}

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Image, Text, TextInput, TouchableOpacity,Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { login } from '../../assets/css/styles';
 import loginImage from '../../assets/img/gif_login.gif';
@@ -21,7 +21,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://192.168.100.9:4000/api/login', {
+      const response = await fetch('http://192.168.65.103:4000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -32,7 +32,9 @@ const Login = () => {
         }),
       });
       if (!response.ok) {
-        throw new Error('Error al iniciar sesión');
+        // throw new Erro r('Error al iniciar sesión');
+        Alert.alert('ERROR', 'Puede verificar que sus credenciales esten correctas por favor!')
+
       }
       const data = await response.json();
       console.log(data);
@@ -47,7 +49,7 @@ const Login = () => {
         navigation.navigate("Table");
       }
       if (data.message === "Doctor") {
-        navigation.navigate("AdministradorDoctores");
+        navigation.navigate("Doctor");
       }
     } catch (error) {
       console.error(error);

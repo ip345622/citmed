@@ -16,18 +16,7 @@ export default AdminUsers = () => {
   const [selectedUser, setSelectedUser] = useState(null);
 
     const [user, setUser] = useState([]);
-    const pacient = [
-        { id: 1, name: 'Jorge', lastName: 'Gomez' },
-        { id: 2, name: 'Carol', lastName: 'Perez' },
-        { id: 3, name: 'Samuel', lastName: 'Jimenez' },
-        { id: 4, name: 'Mario', lastName: 'Lopez' },
-        { id: 5, name: 'Maria', lastName: 'Uc' },
-        { id: 6, name: 'Ricardo', lastName: 'Chan' },
-        { id: 7, name: 'Alejandra', lastName: 'De los santos' },
-        { id: 8, name: 'Alejandra', lastName: 'De los santos' },
-        { id: 9, name: 'Alejandra', lastName: 'De los santos' },
-        { id: 10, name: 'Alejandra', lastName: 'De los santos' },
-    ];
+
     useEffect(() => {
     
 

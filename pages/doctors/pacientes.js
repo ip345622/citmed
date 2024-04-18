@@ -57,28 +57,17 @@ export default Pacientes = () => {
         throw new Error("Error al obtener las citas");
       }
       const citas = await response.json();
-      console.log('dfd',userId);
+      // console.log('dfd',userId);
       const citasTotales = citas.filter(cita =>
-        cita.id_doctor === userId);
+        cita.id_doctor === userId && !cita.userName.includes("Usuario no encontrado") && !cita.userName.includes("administrator"));
     setCitasHoy(citasTotales);
-    // console.log(citasTotales);
+    console.log(citasTotales);
     
     };
     getCitas(userId);
   }, [userId]);
 
-  const pacient = [
-    { id: 1, name: "Jorge", lastName: "Gomez" },
-    { id: 2, name: "Carol", lastName: "Perez" },
-    { id: 3, name: "Samuel", lastName: "Jimenez" },
-    { id: 4, name: "Mario", lastName: "Lopez" },
-    { id: 5, name: "Maria", lastName: "Uc" },
-    { id: 6, name: "Ricardo", lastName: "Chan" },
-    { id: 7, name: "Alejandra", lastName: "De los santos" },
-    { id: 8, name: "Alejandra", lastName: "De los santos" },
-    { id: 9, name: "Alejandra", lastName: "De los santos" },
-    { id: 10, name: "Alejandra", lastName: "De los santos" },
-  ];
+
   return (
     <KeyboardAvoidingView
       style={pacientes.inicio}

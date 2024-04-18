@@ -5,11 +5,13 @@ import NavbarUser from "../../components/navbar/NavbarUser";
 import FooterNav from '../../components/footer/FooterNav';
 import { doctor } from "../../assets";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import useInterval from "../../components/interval/interval";
 
 
 export default Historial = () => {
     const [userId, setUserId] = useState(null);
     const [citas, setCitas] = useState([]);
+    const [citasUser, setCitasUser] = useState([]);
     useEffect(() => {
         const fetchUserId = async () => {
             const result = await AsyncStorage.getItem('userId');
@@ -49,12 +51,17 @@ export default Historial = () => {
                 }
 
                 const citas = await response.json();
+                const citasU = citas.filter(c => c.id_user === userId);
+                setCitasUser(citasU);
+                const citaMasReciente = citasU.reduce((prev, curr) => {
+                    const prevDate = new Date(prev.data + ' ' + prev.time);
+                    const currDate = new Date(curr.data + ' ' + curr.time);
+                    const prevDiff = Math.abs(prevDate.getTime() - now.getTime());
+                    const currDiff = Math.abs(currDate.getTime() - now.getTime());
+                    return prevDiff < currDiff ? prev : curr;
+                });
 
-                const citaMasReciente = citas.filter(cita =>
-                    cita.id_user === userId &&
-                    new Date(cita.createdAt) >= twentyFourHoursAgo &&
-                    new Date(cita.createdAt) <= now
-                ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+    // console.log(citaMasReciente); 
 
                 // console.log('Cita más reciente:', citaMasReciente);
                 return citaMasReciente;
@@ -68,7 +75,7 @@ export default Historial = () => {
             getCitaMasReciente(userId).then(cita => {
                 if (cita) {
                     setLoginUser({
-                        username: cita.username,
+                        username: cita.userName,
                         data: cita.data,
                         time: cita.time,
                         doctor: cita.doctorName,
@@ -104,6 +111,7 @@ export default Historial = () => {
         }
         
     }, [userId]);
+    
 
     const [loginUser, setLoginUser] = useState({
         username: '',
@@ -134,7 +142,7 @@ export default Historial = () => {
             <Text style={historial.h1}>Historial de citas</Text>
             <View style={historial.centeredView}>
                     <ScrollView contentContainerStyle={historial.scrollViewContent}>
-                {citas.map((h) => (
+                {citasUser.map((h) => (
                         <View style={historial.card}>
                             <View style={historial.textContainer}>
                                 <Text style={historial.h2}>Fecha: {h.data}</Text>

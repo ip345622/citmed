@@ -17,7 +17,7 @@ import Profile from './pages/users/profile';
 import Doctor from './pages/doctors';
 import Pacientes from './pages/doctors/pacientes';
 
-import Administrator from './pages/administrator';
+import Administrator from './pages/administrator/index'
 import AdminDoc from './pages/administrator/adminDoc';
 import AdminUsers from './pages/administrator/adminUsers';
 

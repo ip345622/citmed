@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { userImg } from "../../assets";
 import NavbarUser from "../../components/navbar/NavbarUser";
 import FooterNav from '../../components/footer/FooterNav';
+import useInterval from "../../components/interval/interval";
 
 export default Profile = () => {
     const [keyboardStatus, setKeyboardStatus] = useState(false);
@@ -17,6 +18,7 @@ export default Profile = () => {
     const [verifyPassword, setVerifyPassword] = useState('');
     const [email, setEmail] = useState('');
     const [nombrePaciente, setNombrePaciente] = useState('');
+    const [getUsers, setGetUsers] = useState('');
     const [userId, setUserId] = useState(null);
 
     useEffect(() => {
@@ -29,19 +31,42 @@ export default Profile = () => {
                 // console.log('userId:', userId);
             }
         };
-
         fetchUserId();
+        
     }, []);
+    useInterval(() => {
+        getUser(userId);
+    },2000)
+    useEffect(() => {
+        // getUser(userId);
+        setNombrePaciente(getUsers[0]?.username);
+        setEmail(getUsers[0]?.email);
+    },[])
+    console.log(nombrePaciente);
+
+
+    const getUser = async(userId) => {
+        const response = await fetch(`http://192.168.65.103:4000/api/users`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        const user = await response.json();
+        const filteredUsers = user.filter(u => u._id === userId);
+        setGetUsers(filteredUsers);
+        console.log(filteredUsers.username);
+    };
 
     const createAppointment = async () => {
-        const response = await fetch(`http://192.168.100.9:4000/api/user/${userId}`, {
+        const response = await fetch(`http://192.168.65.103:4000/api/user/${userId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 username: nombrePaciente,
-                password: password,
+                // password: password,
                 email: email,
             }),
         });
@@ -56,19 +81,8 @@ export default Profile = () => {
         const data = await response.json();
         // console.log(data);
     };
-    // const guardarCita = () => {
-    //     if (password) { 
-    //         if (password === verifyPassword){
-    //             onSave(nombrePaciente, password, email, hora);
-    //             Alert.alert('Cambios guardados', 'Los cambios se han guardado correctamente!')
-    //         }else{
-    //             Alert.alert('Error', 'Verificar contraseña por favor!')
-    //         }
-    //     } else {
-    //         console.error('Debes seleccionar un doctor');
-    //     }
-    // };
-    
+ 
+   
 
     return (
         <KeyboardAvoidingView style={profile.inicio} behavior={Platform.OS === 'ios' ? 'padding' : null}>

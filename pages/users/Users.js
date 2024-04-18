@@ -7,6 +7,7 @@ import { doctor, pediatria, nutricion, ginecoligia, dermatologia, psiquiatra, of
 import NavbarUser from "../../components/navbar/NavbarUser";
 import FooterNav from '../../components/footer/FooterNav';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import useInterval from "../../components/interval/interval";
 
 
 export default Users = () => {
@@ -51,6 +52,9 @@ export default Users = () => {
     }, []);
 
     useEffect(() => {
+        
+    }, [userId]);
+    useInterval(() => {
         const getCitaMasReciente = async (userId) => {
             try {
                 const now = new Date();
@@ -69,11 +73,13 @@ export default Users = () => {
 
                 const citas = await response.json();
 
-                const citaMasReciente = citas.filter(cita =>
-                    cita.id_user === userId &&
-                    new Date(cita.createdAt) >= twentyFourHoursAgo &&
-                    new Date(cita.createdAt) <= now
-                ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+                const citaMasReciente = citas.reduce((prev, curr) => {
+                    const prevDate = new Date(prev.data + ' ' + prev.time);
+                    const currDate = new Date(curr.data + ' ' + curr.time);
+                    const prevDiff = Math.abs(prevDate.getTime() - now.getTime());
+                    const currDiff = Math.abs(currDate.getTime() - now.getTime());
+                    return prevDiff < currDiff ? prev : curr;
+                });
 
                 // console.log('Cita más reciente:', citaMasReciente);
                 return citaMasReciente;
@@ -87,17 +93,18 @@ export default Users = () => {
             getCitaMasReciente(userId).then(cita => {
                 if (cita) {
                     setLoginUser({
-                        username: cita.username,
+                        username: cita.userName,
                         data: cita.data,
                         time: cita.time,
                         doctor: cita.doctorName,
                     });
+                    console.log(cita);
                 }
             }).catch(error => {
                 console.error('Error al obtener la cita más reciente:', error);
             });
         }
-    }, [userId]);
+    },2000);
 
     const openModal = async (area) => {
         const doctors = await getDoctors(area);
@@ -127,12 +134,7 @@ export default Users = () => {
                 }),
             });
     
-            // if (response.ok) {
-             // throw new Error('Error al crear la cita');
-            // }
-    
-            // Actualizar la lista de citas o realizar alguna acción adicional si es necesario
-            console.log('Cita creada exitosamente');
+           
             closeModal();
         } catch (error) {
             console.error('Error al crear la cita:', error);

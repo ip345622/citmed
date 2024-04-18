@@ -4,7 +4,7 @@ import { userM } from "../../assets/css/styles";
 
 
 const ModalDelete = ({ visible, onClose,doctor }) => {
-    // console.log(doctor);
+    console.log(doctor);
     const deleteDoctor = async(doctor) => {
         try {
             const response = await fetch(`http://192.168.65.103:4000/api/doctor/${doctor}`, {
@@ -18,17 +18,19 @@ const ModalDelete = ({ visible, onClose,doctor }) => {
         //     Alert.alert("Eliminado",'Doctor eliminado correctamente');
         // onClose();
         // }
-        if(response.ok){
-            const response = await fetch(`http://192.168.65.103:4000/api/user/${doctor}`, {
+            console.log(doctor);
+            const response2 = await fetch(`http://192.168.65.103:4000/api/user/${doctor}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
       });
       console.log(response.json());
-        Alert.alert("Eliminado",'Usuario eliminado correctamente');
+        if(response2.ok){
+            Alert.alert("Eliminado",'Usuario eliminado correctamente');
         onClose();
         }
+        
         } catch (error) {
             console.log(error);
         }

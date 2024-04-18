@@ -63,11 +63,13 @@ export default Doctor = () => {
                 const citas = await response.json();
                 // console.log(userId);
 
-                const citaMasReciente = citas.filter(cita =>
-                    cita.id_doctor === userId &&
-                    new Date(cita.createdAt) >= twentyFourHoursAgo &&
-                    new Date(cita.createdAt) <= now
-                ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+                const citaMasReciente = citas.reduce((prev, curr) => {
+                    const prevDate = new Date(prev.data + ' ' + prev.time);
+                    const currDate = new Date(curr.data + ' ' + curr.time);
+                    const prevDiff = Math.abs(prevDate.getTime() - now.getTime());
+                    const currDiff = Math.abs(currDate.getTime() - now.getTime());
+                    return prevDiff < currDiff ? prev : curr;
+                });
 
                 // console.log('Cita más reciente:', citaMasReciente);
                 return citaMasReciente;
@@ -105,7 +107,7 @@ export default Doctor = () => {
                     cita.id_doctor === userId );
                     const cantidadCitas = citasTotales.length;
                     setcantidadCitas(cantidadCitas);
-    // console.log('Cantidad de citas:', cantidadCitas);
+    console.log('Cantidad de citas:', cantidadCitas);
     // return cantidadCitas;
         }
         getCantidadCitas(userId);

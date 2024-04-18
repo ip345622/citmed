@@ -7,33 +7,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PieChart } from "react-native-chart-kit";
 
 
-const data = [
-  {
-    name: " Canceladas",
-    count: 20, // Cambia este valor según las consultas pendientes
-    color: "#FF6347", // Color para las consultas pendientes
-    legendFontColor: "#7F7F7F",
-    legendFontSize: 15,
-  },
-  {
-    name: " Cantidad de consultas",
-    count: 45, // Cambia este valor según las consultas terminadas
-    color: "#1E90FF", // Color para las consultas terminadas
-    legendFontColor: "#7F7F7F",
-    legendFontSize: 15,
-  },
-  {
-    name: " Terminadas",
-    count: 15, // Cambia este valor según las consultas canceladas
-    color: "#32CD32", // Color para las consultas canceladas
-    legendFontColor: "#7F7F7F",
-    legendFontSize: 15,
-  },
-];
 
-export default Administrator = () => {
+
+export default Adminstrator = () => {
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   const [user,setUser] = useState('');
+  const [cantidadUsers,setCantidadUser] = useState('');
+  const [cantidadDoctors, setCantidadDoctors] = useState('');
   const [userId, setUserId] = useState(null);
   useEffect(() => {
     const fetchUserId = async () => {
@@ -53,10 +33,57 @@ export default Administrator = () => {
             }
         }
     };
-
+    getCantidadUsers();
+    getDoctors();
     fetchUserId();
 }, []);
-
+const getCantidadUsers = async() => {
+  const response = await fetch('http://192.168.65.103:4000/api/users', {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      });
+      const users = await response.json();
+      const usersFilter = users.filter(user => user.rol == 'user');
+          const cantidadUs = usersFilter.length;
+          console.log("use",cantidadUs);
+          setCantidadUser(cantidadUs);
+// console.log('Cantidad de citas:', cantidadCitas);
+// return cantidadCitas;
+}
+const getDoctors = async() => {
+  const response = await fetch('http://192.168.65.103:4000/api/Doctors', {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      });
+      const doc = await response.json();
+      
+      // const usersFilter = users.filter(user => user.rol == 'user');
+          const cantidadDoc = doc.length;
+          console.log(cantidadDoc);
+          setCantidadDoctors(cantidadDoc);
+// console.log('Cantidad de citas:', cantidadCitas);
+// return cantidadCitas;
+}
+const data = [
+  {
+    name: " Doctores",
+    count: 5, // Cambia este valor según las consultas pendientes
+    color: "#FF6347", // Color para las consultas pendientes
+    legendFontColor: "#7F7F7F",
+    legendFontSize: 15,
+  },
+  {
+    name: "Pacientes",
+    count: cantidadUsers, // Cambia este valor según las consultas terminadas
+    color: "#1E90FF", // Color para las consultas terminadas
+    legendFontColor: "#7F7F7F",
+    legendFontSize: 15,
+  },
+];
 useEffect(() => {
   const getUser = async (userId) => {
     const response = await fetch(`http://192.168.65.103:4000/api/users`, {
@@ -76,7 +103,7 @@ useEffect(() => {
   }
   if (userId) {
     console.log(user);
-    getUser(userId);
+    // getUser(userId);
   }
 },[userId])
 
@@ -92,7 +119,7 @@ useEffect(() => {
             </View>
         <View style={{ alignItems: "center", marginTop: 100 }}>
           {/* Grafico */}
-          <Text style={admin.h1}>Gráfico de Consultas</Text>
+          <Text style={admin.h1}>Gráfico de Usuarios</Text>
           <PieChart
             data={data}
             width={350}
